@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Agreement Challenge</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --yellow: #F5C400;
+    --yellow-dark: #d4a900;
+    --pink: #F2A7C3;
+    --pink-dark: #d4849f;
+    --orange: #E84B23;
+    --grey-dark: #1a1a1a;
+    --grey-mid: #2a2a2a;
+    --grey-light: #666666;
+    --green: #00b87a;
+    --red: #e63946;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:var(--black); font-family:'Inter',Arial,sans-serif; min-height:100vh; color:var(--white); }
+  .container { max-width:860px; margin:0 auto; padding:32px 20px; }
+
+  /* HEADER */
+  .header { text-align:center; margin-bottom:32px; }
+  .br-logo { font-size:13px; font-weight:900; letter-spacing:1px; color:var(--white); margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .br-logo-dot { width:6px; height:6px; background:var(--yellow); border-radius:50%; }
+  .badge { display:inline-block; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--black); background:var(--yellow); padding:5px 14px; border-radius:2px; margin-bottom:16px; font-weight:700; }
+  h1 { font-size:clamp(28px,5vw,52px); font-weight:900; color:var(--white); line-height:1.05; margin-bottom:8px; letter-spacing:-1px; }
+  h1 span { color:var(--yellow); }
+  .subtitle { color:var(--grey-light); font-size:13px; }
+
+  /* SCORE BAR */
+  .score-bar { display:flex; align-items:center; justify-content:space-between; background:var(--grey-dark); border:1px solid #333; border-radius:4px; padding:12px 20px; margin-bottom:24px; }
+  .score-item { text-align:center; }
+  .score-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--grey-light); margin-bottom:3px; }
+  .score-val { font-size:24px; font-weight:900; color:var(--white); }
+  .score-val.gold { color:var(--yellow); }
+  .score-val.sage { color:var(--green); }
+  .progress-wrap { flex:1; margin:0 24px; }
+  .progress-track { height:3px; background:#333; border-radius:0; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--yellow); border-radius:0; transition:width 0.5s; }
+  .progress-text { font-size:10px; color:var(--grey-light); margin-top:5px; text-align:center; letter-spacing:1px; }
+
+  .screen { display:none; }
+  .screen.active { display:block; animation:fadeUp 0.3s ease both; }
+
+  /* START SCREEN */
+  .agreement-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; margin:24px 0; background:#333; border:1px solid #333; }
+  .ag-card { background:var(--grey-dark); padding:20px; }
+  .ag-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--yellow); margin-bottom:8px; }
+  .ag-name { font-size:14px; font-weight:900; color:var(--white); margin-bottom:6px; }
+  .ag-hint { font-size:11px; color:var(--grey-light); line-height:1.5; }
+  .rounds-info { display:flex; justify-content:center; gap:12px; margin-bottom:28px; flex-wrap:wrap; }
+  .round-pill { background:transparent; border:1px solid #444; border-radius:2px; padding:7px 16px; font-size:11px; color:var(--grey-light); letter-spacing:1px; }
+  .start-btn { background:var(--yellow); color:var(--black); border:none; border-radius:2px; padding:16px 48px; font-size:13px; font-weight:900; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:background 0.2s; }
+  .start-btn:hover { background:var(--yellow-dark); }
+
+  /* GAME */
+  .round-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--yellow); text-align:center; margin-bottom:6px; }
+  #bonusScreen .round-label { color:var(--pink); }
+  .round-title { font-size:22px; font-weight:900; color:var(--white); text-align:center; margin-bottom:4px; letter-spacing:-0.5px; }
+  .round-subtitle { font-size:13px; color:var(--grey-light); text-align:center; margin-bottom:20px; }
+
+  .statement-card { background:var(--grey-dark); border-left:4px solid var(--yellow); border-radius:0; padding:24px 28px; margin-bottom:20px; text-align:left; min-height:110px; display:flex; flex-direction:column; justify-content:center; }
+  .statement-dim { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--yellow); margin-bottom:10px; }
+  .statement-text { font-size:18px; color:var(--white); line-height:1.5; font-weight:700; }
+
+  .instruction { font-size:12px; color:var(--grey-light); text-align:center; margin-bottom:12px; letter-spacing:1px; text-transform:uppercase; }
+
+  .agreements-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-bottom:20px; background:#333; }
+  .ag-btn { background:var(--grey-dark); border:none; padding:18px 16px; cursor:pointer; text-align:left; transition:background 0.15s; width:100%; }
+  .ag-btn:hover:not(:disabled) { background:var(--grey-mid); }
+  .ag-btn.correct { background:#003a1f; border-left:3px solid var(--green); }
+  .ag-btn.wrong { background:#2a0a0a; opacity:0.5; }
+  .ag-btn.selected-wrong { background:#2a0a0a; border-left:3px solid var(--red); }
+  .ag-btn:disabled { cursor:not-allowed; }
+  .ag-btn-tag { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--yellow); margin-bottom:5px; display:block; }
+  #bonusScreen .ag-btn-tag { color:var(--pink); }
+  .ag-btn-name { font-size:13px; font-weight:700; color:var(--white); line-height:1.3; }
+
+  .feedback-box { border-radius:0; padding:16px 20px; margin-bottom:16px; display:none; }
+  .feedback-box.show { display:block; }
+  .feedback-box.correct-fb { background:#003a1f; border-left:4px solid var(--green); }
+  .feedback-box.wrong-fb { background:#2a0a0a; border-left:4px solid var(--red); }
+  .fb-title { font-size:14px; font-weight:900; color:var(--white); margin-bottom:6px; }
+  .fb-text { font-size:13px; color:rgba(255,255,255,0.7); line-height:1.6; }
+
+  .next-btn { display:none; margin:0 auto; background:var(--yellow); color:var(--black); border:none; border-radius:2px; padding:14px 36px; font-size:12px; font-weight:900; letter-spacing:2px; text-transform:uppercase; cursor:pointer; }
+  .next-btn.show { display:block; }
+  .next-btn:hover { background:var(--yellow-dark); }
+
+  /* INTERLUDE */
+  .interlude-wrap { text-align:center; padding:48px 20px; }
+  .interlude-line { width:48px; height:4px; background:var(--pink); margin:0 auto 24px; }
+  .interlude-title { font-size:32px; font-weight:900; color:var(--white); margin-bottom:8px; letter-spacing:-1px; }
+  .interlude-title span { color:var(--pink); }
+  .interlude-score { font-size:72px; font-weight:900; color:var(--pink); line-height:1; letter-spacing:-2px; }
+  .interlude-total { font-size:13px; color:var(--grey-light); margin-bottom:20px; letter-spacing:2px; text-transform:uppercase; }
+  .interlude-msg { color:var(--grey-light); font-size:14px; max-width:460px; margin:0 auto 32px; line-height:1.7; }
+  .bonus-btn { background:var(--pink); color:var(--black); border:none; border-radius:2px; padding:16px 44px; font-size:12px; font-weight:900; letter-spacing:2px; text-transform:uppercase; cursor:pointer; }
+
+  /* BONUS */
+  .bonus-score { text-align:center; margin-bottom:14px; font-size:11px; color:var(--grey-light); letter-spacing:2px; text-transform:uppercase; }
+  .bonus-score span { color:var(--pink); font-weight:900; font-size:14px; }
+  .timer-wrap { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:16px; }
+  .timer-bar-track { flex:1; max-width:300px; height:4px; background:#333; border-radius:0; overflow:hidden; }
+  .timer-bar-fill { height:100%; background:var(--pink); border-radius:0; transition:width 0.1s linear; }
+  .timer-label { font-size:18px; font-weight:900; color:var(--pink); min-width:28px; text-align:center; }
+  .flash-card { background:var(--grey-dark); border-left:4px solid var(--pink); padding:32px 28px; margin-bottom:20px; text-align:left; min-height:130px; display:flex; flex-direction:column; justify-content:center; transition:border-color 0.15s, background 0.15s; }
+  .flash-card-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--pink); margin-bottom:10px; }
+  .flash-card-text { font-size:20px; color:var(--white); line-height:1.4; font-weight:700; }
+  .flash-card.correct-flash { background:#003a1f; border-left-color:var(--green); }
+  .flash-card.wrong-flash { background:#2a0a0a; border-left-color:var(--red); }
+
+  /* FINAL */
+  .final-wrap { text-align:center; padding:48px 20px; }
+  .final-line { width:48px; height:4px; background:var(--yellow); margin:0 auto 24px; }
+  .final-title { font-size:36px; font-weight:900; color:var(--white); margin-bottom:10px; letter-spacing:-1px; }
+  .final-title span { color:var(--yellow); }
+  .final-msg { color:var(--grey-light); font-size:14px; max-width:480px; margin:0 auto 32px; line-height:1.7; }
+  .final-scores { display:flex; justify-content:center; gap:1px; margin-bottom:32px; flex-wrap:wrap; background:#333; border:1px solid #333; display:inline-flex; }
+  .final-score-item { background:var(--grey-dark); padding:20px 32px; text-align:center; }
+  .final-score-num { font-size:40px; font-weight:900; color:var(--yellow); letter-spacing:-1px; }
+  .final-score-label { font-size:9px; color:var(--grey-light); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+  .action-btn { padding:14px 32px; border-radius:2px; font-size:12px; font-weight:900; letter-spacing:2px; cursor:pointer; text-transform:uppercase; transition:all 0.2s; }
+  .action-btn.outline { background:transparent; border:2px solid var(--white); color:var(--white); }
+  .action-btn.outline:hover { background:var(--white); color:var(--black); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="score-bar" id="scoreBar" style="display:none">
+    <div class="score-item"><div class="score-label">Score</div><div class="score-val gold" id="scoreDisplay">0</div></div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-text" id="progressText"></div>
+    </div>
+    <div class="score-item"><div class="score-label">Streak</div><div class="score-val sage" id="streakDisplay">0</div></div>
+  </div>
+
+  <div class="screen active" id="startScreen">
+    <div style="text-align:center">
+      <div class="header">
+        <div class="br-logo"><div class="br-logo-dot"></div>BlackRock<div class="br-logo-dot"></div></div><div class="badge">GSS — Week 3</div>
+        <h1>Know Your <span>Contract</span></h1>
+        <p class="subtitle">Match dimensions to the right agreement — then race the clock in the bonus round</p>
+      </div>
+      <div class="rounds-info">
+        <div class="round-pill">Round 1 — 10 matching questions</div>
+        <div class="round-pill">Bonus Round — 24 flash cards with timer</div>
+      </div>
+      <div class="agreement-grid">
+        <div class="ag-card"><div class="ag-label">HSA</div><div class="ag-name">Hosted Services Agreement</div><div class="ag-hint">SaaS, platforms, tech services</div></div>
+        <div class="ag-card"><div class="ag-label">CSA</div><div class="ag-name">Consulting Services Agreement</div><div class="ag-hint">Professional, people-driven services</div></div>
+        <div class="ag-card"><div class="ag-label">GSA</div><div class="ag-name">General Services Agreement</div><div class="ag-hint">On-site, facilities, operational</div></div>
+        <div class="ag-card"><div class="ag-label">LRA</div><div class="ag-name">Low Risk Addendum</div><div class="ag-hint">Minimal exposure, supplier terms only</div></div>
+      </div>
+      <button class="start-btn" onclick="startRound1()">Start Round 1</button>
+    </div>
+  </div>
+
+  <div class="screen" id="round1Screen">
+    <div class="round-label">Round 1 of 2</div>
+    <div class="round-title">Tap to Match</div>
+    <div class="round-subtitle">Read the statement — tap the correct master agreement</div>
+    <div class="statement-card" id="statementCard">
+      <div class="statement-dim" id="statementDim"></div>
+      <div class="statement-text" id="statementText"></div>
+    </div>
+    <div class="instruction">Which agreement does this belong to?</div>
+    <div class="agreements-grid">
+      <button class="ag-btn" id="ag-HSA" onclick="selectAgreement('HSA')"><span class="ag-btn-tag">HSA</span><div class="ag-btn-name">Hosted Services Agreement</div></button>
+      <button class="ag-btn" id="ag-CSA" onclick="selectAgreement('CSA')"><span class="ag-btn-tag">CSA</span><div class="ag-btn-name">Consulting Services Agreement</div></button>
+      <button class="ag-btn" id="ag-GSA" onclick="selectAgreement('GSA')"><span class="ag-btn-tag">GSA</span><div class="ag-btn-name">General Services Agreement</div></button>
+      <button class="ag-btn" id="ag-LRA" onclick="selectAgreement('LRA')"><span class="ag-btn-tag">LRA</span><div class="ag-btn-name">Low Risk Addendum</div></button>
+    </div>
+    <div class="feedback-box" id="feedbackBox">
+      <div class="fb-title" id="fbTitle"></div>
+      <div class="fb-text" id="fbText"></div>
+    </div>
+    <div style="text-align:center"><button class="next-btn" id="nextBtn" onclick="nextStatement()">Next Statement</button></div>
+  </div>
+
+  <div class="screen" id="interludeScreen">
+    <div class="interlude-wrap">
+      <div class="interlude-line"></div>
+      <div class="interlude-title">Round 1 <span>Complete.</span></div>
+      <div class="interlude-score" id="interludeScore">0</div>
+      <div class="interlude-total" id="interludeTotal">out of 20</div>
+      <div class="interlude-msg" id="interludeMsg"></div>
+      <button class="bonus-btn" onclick="startBonus()">Start Bonus Round ⚡</button>
+    </div>
+  </div>
+
+  <div class="screen" id="bonusScreen">
+    <div class="round-label">Bonus Round</div>
+    <div class="round-title">Flash Cards</div>
+    <div class="round-subtitle">Tap the right agreement before time runs out!</div>
+    <div class="bonus-score">Card <span id="bonusCurrentNum">1</span> of <span id="bonusTotalNum">16</span> &nbsp;|&nbsp; Correct: <span id="bonusCorrect">0</span></div>
+    <div class="timer-wrap">
+      <div class="timer-bar-track"><div class="timer-bar-fill" id="timerBar" style="width:100%"></div></div>
+      <div class="timer-label" id="timerLabel">10</div>
+    </div>
+    <div class="flash-card" id="flashCard">
+      <div class="flash-card-label" id="flashDim"></div>
+      <div class="flash-card-text" id="flashText"></div>
+    </div>
+    <div class="agreements-grid">
+      <button class="ag-btn" id="bag-HSA" onclick="selectBonus('HSA')"><span class="ag-btn-tag">HSA</span><div class="ag-btn-name">Hosted Services Agreement</div></button>
+      <button class="ag-btn" id="bag-CSA" onclick="selectBonus('CSA')"><span class="ag-btn-tag">CSA</span><div class="ag-btn-name">Consulting Services Agreement</div></button>
+      <button class="ag-btn" id="bag-GSA" onclick="selectBonus('GSA')"><span class="ag-btn-tag">GSA</span><div class="ag-btn-name">General Services Agreement</div></button>
+      <button class="ag-btn" id="bag-LRA" onclick="selectBonus('LRA')"><span class="ag-btn-tag">LRA</span><div class="ag-btn-name">Low Risk Addendum</div></button>
+    </div>
+  </div>
+
+  <div class="screen" id="finalScreen">
+    <div class="final-wrap">
+      <div class="final-line"></div>
+      <div class="final-title">Challenge <span>Complete.</span></div>
+      <div class="final-msg" id="finalMsg"></div>
+      <div class="final-scores">
+        <div class="final-score-item"><div class="final-score-num" id="finalR1">0</div><div class="final-score-label">Round 1</div></div>
+        <div class="final-score-item"><div class="final-score-num" id="finalR2">0</div><div class="final-score-label">Bonus Round</div></div>
+      </div>
+      <button class="action-btn outline" onclick="restartGame()">Play Again</button>
+    </div>
+  </div>
+
+</div>
+<script>
+var STATEMENTS=[
+  {dim:"Primary Use Case",text:"SaaS, platforms, hosted or managed tech services",answer:"HSA",feedback:"HSA covers any software or platform hosted by the vendor — Salesforce, Workday, DocuSign. If the vendor hosts it and you access it remotely, it is an HSA."},
+  {dim:"Primary Use Case",text:"Consulting and professional people-driven services",answer:"CSA",feedback:"CSA covers engagements where you are buying expertise and advice. The deliverable is knowledge — strategy, analysis, recommendations."},
+  {dim:"Primary Use Case",text:"Services requiring on-site access, facilities, or operational interaction",answer:"GSA",feedback:"GSA is for suppliers who physically show up — security guards, cleaners, maintenance. On-site presence is the key signal."},
+  {dim:"Primary Use Case",text:"Very low-risk services with minimal exposure",answer:"LRA",feedback:"The Low Risk Addendum is for genuinely low-risk engagements — low value, limited data access, supplier insists on their own terms."},
+  {dim:"What the Master Governs",text:"Security, audit rights, liability and termination",answer:"HSA",feedback:"Because HSA involves data hosting, the master focuses on protecting that data — strong security standards, audit rights and clear termination."},
+  {dim:"What the Master Governs",text:"Staffing rules, IP framework and liability",answer:"CSA",feedback:"CSA governs who works on your engagement, who owns the IP created, and what happens if things go wrong. IP ownership is particularly important."},
+  {dim:"What the Master Governs",text:"Access rights, insurance and compliance",answer:"GSA",feedback:"GSA focuses on who can access your premises, ensuring the supplier has adequate insurance, and setting compliance standards for on-site work."},
+  {dim:"What the Master Governs",text:"Only core legal protections — stripped back to essentials",answer:"LRA",feedback:"The Low Risk Addendum keeps it simple. Because the engagement is low risk, only the most essential legal protections are retained."},
+  {dim:"Deal Customisation Lives In",text:"Schedules — subscription pricing, SLAs, service specifics",answer:"HSA",feedback:"In an HSA, deal-specific detail like pricing tiers and SLA commitments live in Schedules attached to the master agreement."},
+  {dim:"Deal Customisation Lives In",text:"Statements of Work — scope, deliverables, rates and fixed fees",answer:"CSA",feedback:"Every CSA engagement is defined through a Statement of Work capturing what will be delivered, by when, and at what cost."}
+];
+
+var BONUS_CARDS=[
+  {dim:"Data Hosting",text:"The vendor hosts your data on their servers",answer:"HSA"},
+  {dim:"Staffing Rules",text:"Governs who works on your engagement and how",answer:"CSA"},
+  {dim:"On-Site Access",text:"Supplier physically accesses your premises",answer:"GSA"},
+  {dim:"Core Legal Only",text:"Stripped back to essential protections only",answer:"LRA"},
+  {dim:"SLAs Included",text:"Service level commitments defined per service",answer:"HSA"},
+  {dim:"IP Framework",text:"Defines who owns the intellectual property created",answer:"CSA"},
+  {dim:"Insurance Required",text:"Supplier must hold adequate insurance for on-site work",answer:"GSA"},
+  {dim:"Minimal Exposure",text:"Low value, low risk, minimal data access",answer:"LRA"},
+  {dim:"Strong Audit Rights",text:"Right to inspect vendor compliance at any time",answer:"HSA"},
+  {dim:"Delivery Quality Risk",text:"Main risk is whether the work gets delivered as promised",answer:"CSA"},
+  {dim:"Facilities Access",text:"Controls access rights to your buildings and sites",answer:"GSA"},
+  {dim:"Supplier Terms Apply",text:"Supplier insists on using their own terms and conditions",answer:"LRA"},
+  {dim:"Uptime & Continuity",text:"Business continuity and disaster recovery provisions included",answer:"HSA"},
+  {dim:"Project-Based SOW",text:"Each engagement scoped and priced via a Statement of Work",answer:"CSA"},
+  {dim:"Physical Presence",text:"Supplier staff are on your premises regularly",answer:"GSA"},
+  {dim:"Low Risk Profile",text:"Discrete, low-impact service with minimal interaction",answer:"LRA"},
+  {dim:"Service Delivery Model",text:"Ongoing system or platform access",answer:"HSA"},
+  {dim:"Service Delivery Model",text:"Project-based or time-bound engagement",answer:"CSA"},
+  {dim:"Service Delivery Model",text:"On-site or hybrid service delivery",answer:"GSA"},
+  {dim:"Service Delivery Model",text:"Discrete, low-impact, one-off service",answer:"LRA"},
+  {dim:"Key Risk Driver",text:"Data hosting, security, uptime and continuity",answer:"HSA"},
+  {dim:"Key Risk Driver",text:"Delivery quality and staffing",answer:"CSA"},
+  {dim:"Key Risk Driver",text:"Physical access and operational risk",answer:"GSA"},
+  {dim:"Key Risk Driver",text:"Minimal data, no hosting, limited access",answer:"LRA"},
+  {dim:"Audit Rights",text:"Strong — right to inspect and verify vendor compliance",answer:"HSA"},
+  {dim:"Audit Rights",text:"Often excluded — minimal audit provisions",answer:"LRA"},
+  {dim:"SLAs",text:"Schedule-specific service level commitments included",answer:"HSA"},
+  {dim:"SLAs",text:"Rare — not a standard feature",answer:"CSA"},
+  {dim:"Security Requirements",text:"Robust and mandatory security standards required",answer:"HSA"},
+  {dim:"Security Requirements",text:"Baseline security requirements only",answer:"CSA"},
+  {dim:"Data Hosted by Vendor",text:"Yes — ongoing system and platform access",answer:"HSA"},
+  {dim:"Data Hosted by Vendor",text:"No — typically no data hosting involved",answer:"GSA"}
+];
+
+var currentQ=0,score=0,streak=0,answered=false,r1Score=0;
+var bonusQ=0,bonusScore=0,bonusAnswered=false;
+var timerInterval=null,timeLeft=10;
+var TIMER_DURATION=10;
+var bonusDeck=[];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+function startRound1(){
+  currentQ=0;score=0;streak=0;
+  document.getElementById('scoreBar').style.display='flex';
+  showScreen('round1Screen');
+  updateScoreBar();
+  loadStatement();
+}
+
+function updateScoreBar(){
+  document.getElementById('scoreDisplay').textContent=score;
+  document.getElementById('streakDisplay').textContent=streak;
+  document.getElementById('progressFill').style.width=(currentQ/STATEMENTS.length*100)+'%';
+  document.getElementById('progressText').textContent='Question '+Math.min(currentQ+1,STATEMENTS.length)+' of '+STATEMENTS.length;
+}
+
+function loadStatement(){
+  var s=STATEMENTS[currentQ];
+  answered=false;
+  document.getElementById('statementDim').textContent=s.dim;
+  document.getElementById('statementText').textContent=s.text;
+  document.getElementById('feedbackBox').className='feedback-box';
+  document.getElementById('nextBtn').className='next-btn';
+  ['HSA','CSA','GSA','LRA'].forEach(function(k){
+    var b=document.getElementById('ag-'+k);
+    b.className='ag-btn';b.disabled=false;
+  });
+  updateScoreBar();
+}
+
+function selectAgreement(chosen){
+  if(answered)return;
+  answered=true;
+  var s=STATEMENTS[currentQ];
+  var ok=chosen===s.answer;
+  ['HSA','CSA','GSA','LRA'].forEach(function(k){document.getElementById('ag-'+k).disabled=true;});
+  document.getElementById('ag-'+s.answer).classList.add('correct');
+  if(!ok){document.getElementById('ag-'+chosen).classList.add('wrong');streak=0;}
+  else{score++;streak++;}
+  var fb=document.getElementById('feedbackBox');
+  fb.className='feedback-box show '+(ok?'correct-fb':'wrong-fb');
+  document.getElementById('fbTitle').textContent=ok?(streak>=2?streak+' in a row!':'Correct!'):'Not quite!';
+  document.getElementById('fbText').textContent=s.feedback;
+  document.getElementById('nextBtn').className='next-btn show';
+  document.getElementById('nextBtn').textContent=currentQ<STATEMENTS.length-1?'Next Statement':'See Round 1 Results';
+  updateScoreBar();
+}
+
+function nextStatement(){
+  currentQ++;
+  if(currentQ>=STATEMENTS.length)showInterlude();
+  else loadStatement();
+}
+
+function showInterlude(){
+  r1Score=score;
+  document.getElementById('scoreBar').style.display='none';
+  showScreen('interludeScreen');
+  document.getElementById('interludeScore').textContent=r1Score;
+  document.getElementById('interludeTotal').textContent='out of '+STATEMENTS.length;
+  var pct=r1Score/STATEMENTS.length;
+  var msg;
+  if(pct===1)msg="Perfect round! You know every agreement inside out. Now let's see how fast you are!";
+  else if(pct>=0.75)msg="Really strong! The bonus round will cement the ones you found tricky. You've got this!";
+  else if(pct>=0.5)msg="Good effort! The flash cards will help these stick. Focus on what each master governs.";
+  else msg="Keep going — the bonus round reinforces the same content. You'll get there!";
+  document.getElementById('interludeMsg').textContent=msg;
+}
+
+function startBonus(){
+  bonusQ=0;bonusScore=0;bonusAnswered=false;
+  bonusDeck=BONUS_CARDS.slice().sort(function(){return Math.random()-0.5;});
+  showScreen('bonusScreen');
+  document.getElementById('bonusTotalNum').textContent=BONUS_CARDS.length;
+  loadBonusCard();
+}
+
+function loadBonusCard(){
+  if(bonusQ>=bonusDeck.length){showFinal();return;}
+  bonusAnswered=false;
+  var c=bonusDeck[bonusQ];
+  document.getElementById('bonusCurrentNum').textContent=bonusQ+1;
+  document.getElementById('bonusCorrect').textContent=bonusScore;
+  document.getElementById('flashDim').textContent=c.dim;
+  document.getElementById('flashText').textContent=c.text;
+  document.getElementById('flashCard').className='flash-card';
+  ['HSA','CSA','GSA','LRA'].forEach(function(k){
+    var b=document.getElementById('bag-'+k);
+    b.className='ag-btn';b.disabled=false;
+  });
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timeLeft=TIMER_DURATION;
+  updateTimer();
+  timerInterval=setInterval(function(){
+    timeLeft-=0.1;
+    if(timeLeft<=0){
+      timeLeft=0;updateTimer();clearInterval(timerInterval);
+      if(!bonusAnswered)timeUp();
+    }else{updateTimer();}
+  },100);
+}
+
+function updateTimer(){
+  var pct=(timeLeft/TIMER_DURATION)*100;
+  document.getElementById('timerBar').style.width=pct+'%';
+  document.getElementById('timerLabel').textContent=Math.ceil(timeLeft);
+  var fill=document.getElementById('timerBar');
+  if(timeLeft<=3)fill.style.background='#e63946';
+  else if(timeLeft<=6)fill.style.background='#E84B23';
+  else fill.style.background='#F2A7C3';
+}
+
+function timeUp(){
+  bonusAnswered=true;
+  var c=bonusDeck[bonusQ];
+  ['HSA','CSA','GSA','LRA'].forEach(function(k){document.getElementById('bag-'+k).disabled=true;});
+  document.getElementById('bag-'+c.answer).classList.add('correct');
+  document.getElementById('flashCard').classList.add('wrong-flash');
+  setTimeout(function(){bonusQ++;loadBonusCard();},1000);
+}
+
+function selectBonus(chosen){
+  if(bonusAnswered)return;
+  bonusAnswered=true;
+  clearInterval(timerInterval);
+  var c=bonusDeck[bonusQ];
+  var ok=chosen===c.answer;
+  ['HSA','CSA','GSA','LRA'].forEach(function(k){document.getElementById('bag-'+k).disabled=true;});
+  document.getElementById('bag-'+c.answer).classList.add('correct');
+  if(!ok)document.getElementById('bag-'+chosen).classList.add('wrong');
+  document.getElementById('flashCard').classList.add(ok?'correct-flash':'wrong-flash');
+  if(ok)bonusScore++;
+  document.getElementById('bonusCorrect').textContent=bonusScore;
+  setTimeout(function(){bonusQ++;loadBonusCard();},800);
+}
+
+function showFinal(){
+  showScreen('finalScreen');
+  document.getElementById('finalR1').textContent=r1Score+'/'+STATEMENTS.length;
+  document.getElementById('finalR2').textContent=bonusScore+'/'+BONUS_CARDS.length;
+  var total=r1Score+bonusScore;
+  var max=STATEMENTS.length+BONUS_CARDS.length;
+  var pct=total/max;
+  var emoji,msg;
+  if(pct>=0.9){emoji='🏆';msg="Exceptional! You have mastered all four master agreements — from primary use cases to audit rights. Your team is lucky to have you!";}
+  else if(pct>=0.7){emoji='🌟';msg="Great work! You have a strong grasp of the agreements. Review the ones you found tricky — especially what each master governs.";}
+  else if(pct>=0.5){emoji='📚';msg="Good effort! Play again focusing on the differences between HSA security requirements and GSA access rights.";}
+  else{emoji='💪';msg="Keep practising! Focus on the key signal for each agreement — data hosting for HSA, on-site access for GSA, expertise for CSA, and low risk for LRA.";}
+  // emoji removed
+  document.getElementById('finalMsg').textContent=msg;
+}
+
+function restartGame(){
+  currentQ=0;score=0;streak=0;r1Score=0;bonusQ=0;bonusScore=0;
+  clearInterval(timerInterval);
+  document.getElementById('scoreBar').style.display='none';
+  showScreen('startScreen');
+}
+</script>
+</body>
+</html>
