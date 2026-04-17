@@ -160,7 +160,7 @@
         <div class="ag-card"><div class="ag-label">HSA</div><div class="ag-name">Hosted Services Agreement</div><div class="ag-hint">SaaS, platforms, tech services</div></div>
         <div class="ag-card"><div class="ag-label">CSA</div><div class="ag-name">Consulting Services Agreement</div><div class="ag-hint">Professional, people-driven services</div></div>
         <div class="ag-card"><div class="ag-label">GSA</div><div class="ag-name">General Services Agreement</div><div class="ag-hint">On-site, facilities, operational</div></div>
-        <div class="ag-card"><div class="ag-label">LRA</div><div class="ag-name">Low Risk Addendum</div><div class="ag-hint">Minimal exposure, supplier terms only</div></div>
+        <div class="ag-card"><div class="ag-label">VoV</div><div class="ag-name">Low Risk Addendum</div><div class="ag-hint">Minimal exposure, supplier terms only</div></div>
       </div>
       <button class="start-btn" onclick="startRound1()">Start Round 1</button>
     </div>
@@ -179,7 +179,7 @@
       <button class="ag-btn" id="ag-HSA" onclick="selectAgreement('HSA')"><span class="ag-btn-tag">HSA</span><div class="ag-btn-name">Hosted Services Agreement</div></button>
       <button class="ag-btn" id="ag-CSA" onclick="selectAgreement('CSA')"><span class="ag-btn-tag">CSA</span><div class="ag-btn-name">Consulting Services Agreement</div></button>
       <button class="ag-btn" id="ag-GSA" onclick="selectAgreement('GSA')"><span class="ag-btn-tag">GSA</span><div class="ag-btn-name">General Services Agreement</div></button>
-      <button class="ag-btn" id="ag-LRA" onclick="selectAgreement('LRA')"><span class="ag-btn-tag">LRA</span><div class="ag-btn-name">Low Risk Addendum</div></button>
+      <button class="ag-btn" id="ag-VoV" onclick="selectAgreement('VoV')"><span class="ag-btn-tag">VoV</span><div class="ag-btn-name">Low Risk Addendum</div></button>
     </div>
     <div class="feedback-box" id="feedbackBox">
       <div class="fb-title" id="fbTitle"></div>
@@ -216,7 +216,7 @@
       <button class="ag-btn" id="bag-HSA" onclick="selectBonus('HSA')"><span class="ag-btn-tag">HSA</span><div class="ag-btn-name">Hosted Services Agreement</div></button>
       <button class="ag-btn" id="bag-CSA" onclick="selectBonus('CSA')"><span class="ag-btn-tag">CSA</span><div class="ag-btn-name">Consulting Services Agreement</div></button>
       <button class="ag-btn" id="bag-GSA" onclick="selectBonus('GSA')"><span class="ag-btn-tag">GSA</span><div class="ag-btn-name">General Services Agreement</div></button>
-      <button class="ag-btn" id="bag-LRA" onclick="selectBonus('LRA')"><span class="ag-btn-tag">LRA</span><div class="ag-btn-name">Low Risk Addendum</div></button>
+      <button class="ag-btn" id="bag-VoV" onclick="selectBonus('VoV')"><span class="ag-btn-tag">VoV</span><div class="ag-btn-name">Low Risk Addendum</div></button>
     </div>
   </div>
 
@@ -239,11 +239,11 @@ var STATEMENTS=[
   {dim:"Primary Use Case",text:"SaaS, platforms, hosted or managed tech services",answer:"HSA",feedback:"HSA covers any software or platform hosted by the vendor — Salesforce, Workday, DocuSign. If the vendor hosts it and you access it remotely, it is an HSA."},
   {dim:"Primary Use Case",text:"Consulting and professional people-driven services",answer:"CSA",feedback:"CSA covers engagements where you are buying expertise and advice. The deliverable is knowledge — strategy, analysis, recommendations."},
   {dim:"Primary Use Case",text:"Services requiring on-site access, facilities, or operational interaction",answer:"GSA",feedback:"GSA is for suppliers who physically show up — security guards, cleaners, maintenance. On-site presence is the key signal."},
-  {dim:"Primary Use Case",text:"Very low-risk services with minimal exposure",answer:"LRA",feedback:"The Low Risk Addendum is for genuinely low-risk engagements — low value, limited data access, supplier insists on their own terms."},
+  {dim:"Primary Use Case",text:"Very low-risk services with minimal exposure",answer:"VoV",feedback:"The Low Risk Addendum is for genuinely low-risk engagements — low value, limited data access, supplier insists on their own terms."},
   {dim:"What the Master Governs",text:"Security, audit rights, liability and termination",answer:"HSA",feedback:"Because HSA involves data hosting, the master focuses on protecting that data — strong security standards, audit rights and clear termination."},
   {dim:"What the Master Governs",text:"Staffing rules, IP framework and liability",answer:"CSA",feedback:"CSA governs who works on your engagement, who owns the IP created, and what happens if things go wrong. IP ownership is particularly important."},
   {dim:"What the Master Governs",text:"Access rights, insurance and compliance",answer:"GSA",feedback:"GSA focuses on who can access your premises, ensuring the supplier has adequate insurance, and setting compliance standards for on-site work."},
-  {dim:"What the Master Governs",text:"Only core legal protections — stripped back to essentials",answer:"LRA",feedback:"The Low Risk Addendum keeps it simple. Because the engagement is low risk, only the most essential legal protections are retained."},
+  {dim:"What the Master Governs",text:"Only core legal protections — stripped back to essentials",answer:"VoV",feedback:"The Low Risk Addendum keeps it simple. Because the engagement is low risk, only the most essential legal protections are retained."},
   {dim:"Deal Customisation Lives In",text:"Schedules — subscription pricing, SLAs, service specifics",answer:"HSA",feedback:"In an HSA, deal-specific detail like pricing tiers and SLA commitments live in Schedules attached to the master agreement."},
   {dim:"Deal Customisation Lives In",text:"Statements of Work — scope, deliverables, rates and fixed fees",answer:"CSA",feedback:"Every CSA engagement is defined through a Statement of Work capturing what will be delivered, by when, and at what cost."}
 ];
@@ -252,29 +252,29 @@ var BONUS_CARDS=[
   {dim:"Data Hosting",text:"The vendor hosts your data on their servers",answer:"HSA"},
   {dim:"Staffing Rules",text:"Governs who works on your engagement and how",answer:"CSA"},
   {dim:"On-Site Access",text:"Supplier physically accesses your premises",answer:"GSA"},
-  {dim:"Core Legal Only",text:"Stripped back to essential protections only",answer:"LRA"},
+  {dim:"Core Legal Only",text:"Stripped back to essential protections only",answer:"VoV"},
   {dim:"SLAs Included",text:"Service level commitments defined per service",answer:"HSA"},
   {dim:"IP Framework",text:"Defines who owns the intellectual property created",answer:"CSA"},
   {dim:"Insurance Required",text:"Supplier must hold adequate insurance for on-site work",answer:"GSA"},
-  {dim:"Minimal Exposure",text:"Low value, low risk, minimal data access",answer:"LRA"},
+  {dim:"Minimal Exposure",text:"Low value, low risk, minimal data access",answer:"VoV"},
   {dim:"Strong Audit Rights",text:"Right to inspect vendor compliance at any time",answer:"HSA"},
   {dim:"Delivery Quality Risk",text:"Main risk is whether the work gets delivered as promised",answer:"CSA"},
   {dim:"Facilities Access",text:"Controls access rights to your buildings and sites",answer:"GSA"},
-  {dim:"Supplier Terms Apply",text:"Supplier insists on using their own terms and conditions",answer:"LRA"},
+  {dim:"Supplier Terms Apply",text:"Supplier insists on using their own terms and conditions",answer:"VoV"},
   {dim:"Uptime & Continuity",text:"Business continuity and disaster recovery provisions included",answer:"HSA"},
   {dim:"Project-Based SOW",text:"Each engagement scoped and priced via a Statement of Work",answer:"CSA"},
   {dim:"Physical Presence",text:"Supplier staff are on your premises regularly",answer:"GSA"},
-  {dim:"Low Risk Profile",text:"Discrete, low-impact service with minimal interaction",answer:"LRA"},
+  {dim:"Low Risk Profile",text:"Discrete, low-impact service with minimal interaction",answer:"VoV"},
   {dim:"Service Delivery Model",text:"Ongoing system or platform access",answer:"HSA"},
   {dim:"Service Delivery Model",text:"Project-based or time-bound engagement",answer:"CSA"},
   {dim:"Service Delivery Model",text:"On-site or hybrid service delivery",answer:"GSA"},
-  {dim:"Service Delivery Model",text:"Discrete, low-impact, one-off service",answer:"LRA"},
+  {dim:"Service Delivery Model",text:"Discrete, low-impact, one-off service",answer:"VoV"},
   {dim:"Key Risk Driver",text:"Data hosting, security, uptime and continuity",answer:"HSA"},
   {dim:"Key Risk Driver",text:"Delivery quality and staffing",answer:"CSA"},
   {dim:"Key Risk Driver",text:"Physical access and operational risk",answer:"GSA"},
-  {dim:"Key Risk Driver",text:"Minimal data, no hosting, limited access",answer:"LRA"},
+  {dim:"Key Risk Driver",text:"Minimal data, no hosting, limited access",answer:"VoV"},
   {dim:"Audit Rights",text:"Strong — right to inspect and verify vendor compliance",answer:"HSA"},
-  {dim:"Audit Rights",text:"Often excluded — minimal audit provisions",answer:"LRA"},
+  {dim:"Audit Rights",text:"Often excluded — minimal audit provisions",answer:"VoV"},
   {dim:"SLAs",text:"Schedule-specific service level commitments included",answer:"HSA"},
   {dim:"SLAs",text:"Rare — not a standard feature",answer:"CSA"},
   {dim:"Security Requirements",text:"Robust and mandatory security standards required",answer:"HSA"},
@@ -316,7 +316,7 @@ function loadStatement(){
   document.getElementById('statementText').textContent=s.text;
   document.getElementById('feedbackBox').className='feedback-box';
   document.getElementById('nextBtn').className='next-btn';
-  ['HSA','CSA','GSA','LRA'].forEach(function(k){
+  ['HSA','CSA','GSA','VoV'].forEach(function(k){
     var b=document.getElementById('ag-'+k);
     b.className='ag-btn';b.disabled=false;
   });
@@ -328,7 +328,7 @@ function selectAgreement(chosen){
   answered=true;
   var s=STATEMENTS[currentQ];
   var ok=chosen===s.answer;
-  ['HSA','CSA','GSA','LRA'].forEach(function(k){document.getElementById('ag-'+k).disabled=true;});
+  ['HSA','CSA','GSA','VoV'].forEach(function(k){document.getElementById('ag-'+k).disabled=true;});
   document.getElementById('ag-'+s.answer).classList.add('correct');
   if(!ok){document.getElementById('ag-'+chosen).classList.add('wrong');streak=0;}
   else{score++;streak++;}
@@ -379,7 +379,7 @@ function loadBonusCard(){
   document.getElementById('flashDim').textContent=c.dim;
   document.getElementById('flashText').textContent=c.text;
   document.getElementById('flashCard').className='flash-card';
-  ['HSA','CSA','GSA','LRA'].forEach(function(k){
+  ['HSA','CSA','GSA','VoV'].forEach(function(k){
     var b=document.getElementById('bag-'+k);
     b.className='ag-btn';b.disabled=false;
   });
@@ -412,7 +412,7 @@ function updateTimer(){
 function timeUp(){
   bonusAnswered=true;
   var c=bonusDeck[bonusQ];
-  ['HSA','CSA','GSA','LRA'].forEach(function(k){document.getElementById('bag-'+k).disabled=true;});
+  ['HSA','CSA','GSA','VoV'].forEach(function(k){document.getElementById('bag-'+k).disabled=true;});
   document.getElementById('bag-'+c.answer).classList.add('correct');
   document.getElementById('flashCard').classList.add('wrong-flash');
   setTimeout(function(){bonusQ++;loadBonusCard();},1000);
@@ -424,7 +424,7 @@ function selectBonus(chosen){
   clearInterval(timerInterval);
   var c=bonusDeck[bonusQ];
   var ok=chosen===c.answer;
-  ['HSA','CSA','GSA','LRA'].forEach(function(k){document.getElementById('bag-'+k).disabled=true;});
+  ['HSA','CSA','GSA','VoV'].forEach(function(k){document.getElementById('bag-'+k).disabled=true;});
   document.getElementById('bag-'+c.answer).classList.add('correct');
   if(!ok)document.getElementById('bag-'+chosen).classList.add('wrong');
   document.getElementById('flashCard').classList.add(ok?'correct-flash':'wrong-flash');
@@ -444,7 +444,7 @@ function showFinal(){
   if(pct>=0.9){emoji='🏆';msg="Exceptional! You have mastered all four master agreements — from primary use cases to audit rights. Your team is lucky to have you!";}
   else if(pct>=0.7){emoji='🌟';msg="Great work! You have a strong grasp of the agreements. Review the ones you found tricky — especially what each master governs.";}
   else if(pct>=0.5){emoji='📚';msg="Good effort! Play again focusing on the differences between HSA security requirements and GSA access rights.";}
-  else{emoji='💪';msg="Keep practising! Focus on the key signal for each agreement — data hosting for HSA, on-site access for GSA, expertise for CSA, and low risk for LRA.";}
+  else{emoji='💪';msg="Keep practising! Focus on the key signal for each agreement — data hosting for HSA, on-site access for GSA, expertise for CSA, and low risk for VoV.";}
   // emoji removed
   document.getElementById('finalMsg').textContent=msg;
 }
